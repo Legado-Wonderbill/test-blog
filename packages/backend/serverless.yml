@@ -1,0 +1,59 @@
+org: beiselanja
+app: simple-blog-test
+service: my-blog-service-backend
+
+plugins:
+  - serverless-esbuild
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: eu-west-2 # Choose your AWS region
+  stage: staging
+
+  apiGateway:
+    shouldStartNameWithService: true
+    apiKeys:
+      - name: myBlogApiKey
+  
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:Scan
+      Resource: "arn:aws:dynamodb:us-east-1:*:table/BlogEntries"
+
+functions:
+  createBlogEntry:
+    handler: src/handlers/createBlogEntry.handler
+    events:
+      - http:
+          path: create-blog-entry
+          method: post
+          cors: true
+          private: true
+                    # sls invoke local --function createBlogEntry --path createBlogEntry.json
+
+
+  getBlogEntries:
+    handler: src/handlers/getBlogEntries.handler
+    events:
+      - http:
+          path: get-blog-entries
+          method: get
+          cors: true
+          private: true
+
+resources:
+  Resources:
+    BlogEntriesTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        TableName: BlogEntries
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST

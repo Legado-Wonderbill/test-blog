@@ -1,0 +1,82 @@
+org: beiselanja
+app: simple-blog-test
+service: simple-blog
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-west-2 # Choose your AWS region
+  stage: staging
+
+  # IAM role statements
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:*
+      Resource: "arn:aws:s3:::blog-frontend-bucket/*"
+
+# Use serverless-s3-sync to deploy your React app to the S3 bucket
+plugins:
+  - serverless-s3-sync
+
+custom:
+  s3Sync:
+    - bucketName: blog-frontend-bucket
+      localDir: build # Directory where your React app build is located
+
+resources:
+  Resources:
+    # S3 Bucket for Hosting
+    BlogFrontendBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: blog-frontend-bucket
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: error.html
+
+    # Bucket Policy
+    BlogFrontendBucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket:
+          Ref: BlogFrontendBucket
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal: "*"
+              Action:
+                - "s3:GetObject"
+              Resource:
+                - Fn::Join:
+                    - ""
+                    - - "arn:aws:s3:::"
+                      - Ref: BlogFrontendBucket
+                      - "/*"
+
+    # CloudFront Distribution
+    BlogFrontendDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Origins:
+            - Id: BlogFrontendBucketOrigin
+              DomainName:
+                Fn::GetAtt: [BlogFrontendBucket, DomainName]
+              CustomOriginConfig:
+                HTTPPort: 80
+                HTTPSPort: 443
+                OriginProtocolPolicy: http-only # or "match-viewer"
+
+          DefaultCacheBehavior:
+            TargetOriginId: BlogFrontendBucketOrigin
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods: [GET, HEAD, OPTIONS]
+            CachedMethods: [GET, HEAD, OPTIONS]
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+          ViewerCertificate:
+            CloudFrontDefaultCertificate: true
+          Enabled: true
