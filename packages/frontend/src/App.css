@@ -36,3 +36,34 @@
     transform: rotate(360deg);
   }
 }
+
+.flex {
+  display: flex;
+}
+
+.container {
+  width: 80%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: left;
+}
+
+.enter-data {
+  margin-bottom: 30px;
+}
+.enter-data span,
+.list-data label {
+  display: inline-block;
+  vertical-align: top;
+  width: 100px;
+}
+
+.enter-data input {
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.list-data .box {
+  margin-bottom: 10px;
+}

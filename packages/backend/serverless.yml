@@ -15,14 +15,16 @@ provider:
     shouldStartNameWithService: true
     apiKeys:
       - name: myBlogApiKey
-  
-  iamRoleStatements:
-    - Effect: Allow
-      Action:
-        - dynamodb:PutItem
-        - dynamodb:Scan
-      Resource: "arn:aws:dynamodb:us-east-1:*:table/BlogEntries"
 
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:Scan
+          Resource: "arn:aws:dynamodb:eu-west-2:*:table/BlogEntries"
+  
 functions:
   createBlogEntry:
     handler: src/handlers/createBlogEntry.handler
@@ -33,7 +35,6 @@ functions:
           cors: true
           private: true
                     # sls invoke local --function createBlogEntry --path createBlogEntry.json
-
 
   getBlogEntries:
     handler: src/handlers/getBlogEntries.handler

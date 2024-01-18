@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "deploy": "sls --aws-profile prototypes"
+    "deploy": "sls --aws-profile allinone"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.490.0",

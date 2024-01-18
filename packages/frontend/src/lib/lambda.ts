@@ -1,39 +1,52 @@
-import axios, { AxiosRequestConfig } from "axios";
-
 export type TBlogEntry = {
     id: string;
     title: string;
     description: string;
 }
 
-const endpoint = 'https://z8lyp97n12.execute-api.eu-west-2.amazonaws.com/staging/create-blog-entry';
-const apiKey = "ehq5opqqIN6vmakuoP1vq9hmArIVz5iU8AMKcJ1r"
-
+const url = 'https://42m8f9snj4.execute-api.eu-west-2.amazonaws.com/staging/';
+const apiKey = "EDvoFz1vwJQR2NTYA0Cx6qML6zR0iF24kHE48uz2"
 
 export const createBlogEntry = async (blogEntry: TBlogEntry) => {
-    try {
-    const payload = {
-        blogEntry,
-    };
-
-    const axiosInstance = axios.create();
-    axiosInstance.interceptors.response.use((response) => {
-      const config = response.config as AxiosRequestConfig & {
-        requestPayload?: string;
-      };
-      config.requestPayload = response.config.data;
-      return response;
+  const endpoint = `${url}create-blog-entry`
+  try {
+    const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            'x-api-key': apiKey,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id: blogEntry.id,
+            title: blogEntry.title,
+            description: blogEntry.description,
+        })
     });
 
-    const response = await axiosInstance.post(endpoint, payload, {
-      headers: {
-        "x-api-key": apiKey,
-        "Content-Type": "application/json",
-      },
+    const result = await response.json();
+    return result;
+} catch (error) {
+    console.error(error);
+    throw (error as Error).message;
+}
+}
+
+
+export const getBlogEntries = async () => {
+  const endpoint = `${url}get-blog-entries`
+  try {
+    const response = await fetch(endpoint, {
+        method: 'GET',
+        headers: {
+            'x-api-key': apiKey,
+            'Content-Type': 'application/json',
+        },
     });
-    console.log("response -------------------------------------------------- ", response);
-    } catch (error) {
-        console.error(error);
-        throw (error as Error).message;
-    }
+    const result = await response.json();
+    console.log("result ---------------------------------------------------------- ", result);
+    return result.entries as TBlogEntry[];
+} catch (error) {
+    console.error(error);
+    throw (error as Error).message;
+}
 }

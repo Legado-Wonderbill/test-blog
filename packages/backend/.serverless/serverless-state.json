@@ -17,16 +17,20 @@
           }
         ]
       },
-      "iamRoleStatements": [
-        {
-          "Effect": "Allow",
-          "Action": [
-            "dynamodb:PutItem",
-            "dynamodb:Scan"
-          ],
-          "Resource": "arn:aws:dynamodb:us-east-1:*:table/BlogEntries"
+      "iam": {
+        "role": {
+          "statements": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "dynamodb:PutItem",
+                "dynamodb:Scan"
+              ],
+              "Resource": "arn:aws:dynamodb:eu-west-2:*:table/BlogEntries"
+            }
+          ]
         }
-      ],
+      },
       "versionFunctions": true,
       "compiledCloudFormationTemplate": {
         "AWSTemplateFormatVersion": "2010-09-09",
@@ -172,7 +176,7 @@
                         ]
                       },
                       {
-                        "$ref": "$[\"service\"][\"provider\"][\"iamRoleStatements\"][0]"
+                        "$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][0]"
                       }
                     ]
                   }
@@ -253,7 +257,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/my-blog-service-backend/staging/1705541523227-2024-01-18T01:32:03.227Z/my-blog-service-backend.zip"
+                "S3Key": "serverless/my-blog-service-backend/staging/1705595391598-2024-01-18T16:29:51.598Z/my-blog-service-backend.zip"
               },
               "Handler": "src/handlers/createBlogEntry.handler",
               "Runtime": "nodejs16.x",
@@ -278,7 +282,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/my-blog-service-backend/staging/1705541523227-2024-01-18T01:32:03.227Z/my-blog-service-backend.zip"
+                "S3Key": "serverless/my-blog-service-backend/staging/1705595391598-2024-01-18T16:29:51.598Z/my-blog-service-backend.zip"
               },
               "Handler": "src/handlers/getBlogEntries.handler",
               "Runtime": "nodejs16.x",
@@ -296,24 +300,24 @@
               "GetBlogEntriesLogGroup"
             ]
           },
-          "CreateBlogEntryLambdaVersionkNZusJKyS5wJmPWZh53yFb3CFmOthLvOMhqwWWMeAU": {
+          "CreateBlogEntryLambdaVersionP6FYQSwQWUR0VDNz2LL4woSUtFORgnVzkph2KCan8": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "CreateBlogEntryLambdaFunction"
               },
-              "CodeSha256": "rg0nvjbxFcklZgWepGucTURUH9dv3gu8+tKtfIpRCZg="
+              "CodeSha256": "sNKUlZoML4L8jtP7ltCSbh5f4FgXX7j0yJsucQJDR4A="
             }
           },
-          "GetBlogEntriesLambdaVersionc59pyQFlpYV3a0vUt4mXXggMlXuLpxoX26fzGbEUpGU": {
+          "GetBlogEntriesLambdaVersionBVHHF8LJg7ya40Z9vDYmon0rULE7Q4CuirEzyDB2fOU": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "GetBlogEntriesLambdaFunction"
               },
-              "CodeSha256": "rg0nvjbxFcklZgWepGucTURUH9dv3gu8+tKtfIpRCZg="
+              "CodeSha256": "sNKUlZoML4L8jtP7ltCSbh5f4FgXX7j0yJsucQJDR4A="
             }
           },
           "ApiGatewayRestApi": {
@@ -540,7 +544,7 @@
               "GetBlogEntriesLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1705541518334": {
+          "ApiGatewayDeployment1705595386881": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -569,11 +573,11 @@
                 }
               ]
             },
-            "DependsOn": "ApiGatewayDeployment1705541518334"
+            "DependsOn": "ApiGatewayDeployment1705595386881"
           },
           "ApiGatewayUsagePlan": {
             "Type": "AWS::ApiGateway::UsagePlan",
-            "DependsOn": "ApiGatewayDeployment1705541518334",
+            "DependsOn": "ApiGatewayDeployment1705595386881",
             "Properties": {
               "ApiStages": [
                 {
@@ -782,7 +786,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/my-blog-service-backend/staging/1705541523227-2024-01-18T01:32:03.227Z/custom-resources.zip"
+                "S3Key": "serverless/my-blog-service-backend/staging/1705595391598-2024-01-18T16:29:51.598Z/custom-resources.zip"
               },
               "FunctionName": "my-blog-service-backend-staging-custom-resource-apigw-cw-role",
               "Handler": "api-gateway-cloud-watch-role/handler.handler",
@@ -843,7 +847,7 @@
           "CreateBlogEntryLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "CreateBlogEntryLambdaVersionkNZusJKyS5wJmPWZh53yFb3CFmOthLvOMhqwWWMeAU"
+              "Ref": "CreateBlogEntryLambdaVersionP6FYQSwQWUR0VDNz2LL4woSUtFORgnVzkph2KCan8"
             },
             "Export": {
               "Name": "sls-my-blog-service-backend-staging-CreateBlogEntryLambdaFunctionQualifiedArn"
@@ -852,7 +856,7 @@
           "GetBlogEntriesLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "GetBlogEntriesLambdaVersionc59pyQFlpYV3a0vUt4mXXggMlXuLpxoX26fzGbEUpGU"
+              "Ref": "GetBlogEntriesLambdaVersionBVHHF8LJg7ya40Z9vDYmon0rULE7Q4CuirEzyDB2fOU"
             },
             "Export": {
               "Name": "sls-my-blog-service-backend-staging-GetBlogEntriesLambdaFunctionQualifiedArn"
@@ -1015,7 +1019,7 @@
         "timeout": 6,
         "runtime": "nodejs16.x",
         "vpc": {},
-        "versionLogicalId": "CreateBlogEntryLambdaVersionkNZusJKyS5wJmPWZh53yFb3CFmOthLvOMhqwWWMeAU"
+        "versionLogicalId": "CreateBlogEntryLambdaVersionP6FYQSwQWUR0VDNz2LL4woSUtFORgnVzkph2KCan8"
       },
       "getBlogEntries": {
         "handler": "src/handlers/getBlogEntries.handler",
@@ -1052,7 +1056,7 @@
         "timeout": 6,
         "runtime": "nodejs16.x",
         "vpc": {},
-        "versionLogicalId": "GetBlogEntriesLambdaVersionc59pyQFlpYV3a0vUt4mXXggMlXuLpxoX26fzGbEUpGU"
+        "versionLogicalId": "GetBlogEntriesLambdaVersionBVHHF8LJg7ya40Z9vDYmon0rULE7Q4CuirEzyDB2fOU"
       }
     },
     "resources": {
@@ -1107,7 +1111,7 @@
     "appUid": "4CZpz83F6Z2xyK2LHn"
   },
   "package": {
-    "artifactDirectoryName": "serverless/my-blog-service-backend/staging/1705541523227-2024-01-18T01:32:03.227Z",
+    "artifactDirectoryName": "serverless/my-blog-service-backend/staging/1705595391598-2024-01-18T16:29:51.598Z",
     "artifact": "my-blog-service-backend.zip"
   }
 }
